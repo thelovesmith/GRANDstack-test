@@ -5,11 +5,15 @@ type User {
   reviews: [Review] @relation(name: "WROTE", direction: "OUT")
   avgStars: Float
     @cypher(
+      #Cypher extends graphQL by accesses computations using Cypher query language,  Schema Directive to find all reviews that this user wrote and return the average number of stars they left on reviews
       statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))"
     )
   numReviews: Int
     @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
-  recommendations(first: Int = 3): [Business] @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review)-[:REVIEWS]->(:Business)<-[:REVIEWS]-(:Review)<-[:WROTE]-(:User)-[:WROTE]->(:Review)-[:REVIEWS]->(rec:Business) WHERE NOT EXISTS( (this)-[:WROTE]->(:Review)-[:REVIEWS]->(rec) )WITH rec, COUNT(*) AS num ORDER BY num DESC LIMIT $first RETURN rec")
+  recommendations(first: Int = 3): [Business]
+    @cypher(
+      statement: "MATCH (this)-[:WROTE]->(r:Review)-[:REVIEWS]->(:Business)<-[:REVIEWS]-(:Review)<-[:WROTE]-(:User)-[:WROTE]->(:Review)-[:REVIEWS]->(rec:Business) WHERE NOT EXISTS( (this)-[:WROTE]->(:Review)-[:REVIEWS]->(rec) )WITH rec, COUNT(*) AS num ORDER BY num DESC LIMIT $first RETURN rec"
+    )
 }
 
 type Business {
@@ -18,7 +22,10 @@ type Business {
   address: String
   city: String
   state: String
-  avgStars: Float @cypher(statement: "MATCH (this)<-[:REVIEWS]-(r:Review) RETURN coalesce(avg(r.stars),0.0)")
+  avgStars: Float
+    @cypher(
+      statement: "MATCH (this)<-[:REVIEWS]-(r:Review) RETURN coalesce(avg(r.stars),0.0)"
+    )
   reviews: [Review] @relation(name: "REVIEWS", direction: "IN")
   categories: [Category] @relation(name: "IN_CATEGORY", direction: "OUT")
 }

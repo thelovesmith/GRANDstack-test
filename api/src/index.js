@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 // set environment variables from ../.env
 dotenv.config();
 
+//settign app as Express middleware
 const app = express();
 
 /*
@@ -17,7 +18,8 @@ const app = express();
  * in generated queries and/or mutations. Read more in the docs:
  * https://grandstack.io/docs/neo4j-graphql-js-api.html#makeaugmentedschemaoptions-graphqlschema
  */
-
+// typedefs are coming from the graphql-schema & schema.grapql
+// AugmentSchema auto generates Mutations and Queries
 const schema = makeAugmentedSchema({
   typeDefs
 });
@@ -53,11 +55,11 @@ const port = process.env.GRAPHQL_LISTEN_PORT || 4001;
 const path = "/graphql";
 
 /*
-* Optionally, apply Express middleware for authentication, etc
-* This also also allows us to specify a path for the GraphQL endpoint
-*/
-server.applyMiddleware({app, path});
+ * Optionally, apply Express middleware for authentication, etc
+ * This also allows us to specify a path for the GraphQL endpoint
+ */
+server.applyMiddleware({ app, path });
 
-app.listen({port, path}, () => {
+app.listen({ port, path }, () => {
   console.log(`GraphQL server ready at http://localhost:${port}${path}`);
 });

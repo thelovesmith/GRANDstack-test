@@ -16,6 +16,7 @@ import {
   TextField
 } from "@material-ui/core";
 
+//Using Material Core's default theme
 const styles = theme => ({
   root: {
     maxWidth: 700,
@@ -33,6 +34,7 @@ const styles = theme => ({
   }
 });
 
+// initializing query and settign pagination settings
 const GET_USER = gql`
   query usersPaginateQuery(
     $first: Int
@@ -62,7 +64,7 @@ function UserList(props) {
       ? { name_contains: filterState.usernameFilter }
       : {};
   };
-
+  // making the Query using useQuery
   const { loading, data, error } = useQuery(GET_USER, {
     variables: {
       first: rowsPerPage,
@@ -168,7 +170,7 @@ function UserList(props) {
               return (
                 <TableRow key={n.id}>
                   <TableCell component="th" scope="row">
-                    {n.name}
+                    <strong>{n.name}</strong>
                   </TableCell>
                   <TableCell numeric>
                     {n.avgStars ? n.avgStars.toFixed(2) : "-"}

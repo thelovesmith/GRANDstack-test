@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-
+import { Switch, Route, Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -24,6 +24,7 @@ import {
 } from "@material-ui/icons";
 
 import UserList from "./UserList";
+import Business from "./BusinessList";
 import classNames from "classnames";
 
 const drawerWidth = 240;
@@ -178,40 +179,49 @@ class App extends Component {
             <Divider />
             <List>
               <div>
-                <ListItem button onClick={() => this.setSelectedView("Home")}>
-                  <ListItemIcon>
-                    <DashboardIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Home" />
-                </ListItem>
-
-                <ListItem
-                  button
-                  onClick={() => this.setSelectedView("Businesses")}
-                >
-                  <ListItemIcon>
-                    <EventNoteIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Businesses" />
-                </ListItem>
-
+                {/*  */}
+                <Link to="/">
+                  <ListItem button onClick={() => this.setSelectedView("Home")}>
+                    <ListItemIcon>
+                      <DashboardIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                  </ListItem>
+                </Link>
+                {/*  */}
+                <Link to="/business">
+                  <ListItem
+                    button
+                    onClick={() => this.setSelectedView("Businesses")}
+                  >
+                    <ListItemIcon>
+                      <EventNoteIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Businesses" />
+                  </ListItem>
+                </Link>
+                {/*  */}
                 <ListItem button onClick={() => this.setSelectedView("Users")}>
                   <ListItemIcon>
                     <PeopleIcon />
                   </ListItemIcon>
                   <ListItemText primary="Users" />
                 </ListItem>
+                {/*  */}
               </div>
             </List>
           </Drawer>
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />
-
             {/* FIXME: Use proper routing here instead  */}
             <Typography component="div" className={classes.chartContainer}>
-              {this.state.selectedView === "Home" ? <UserList /> : null}
-              {this.state.selectedView === "Businesses" ? <div /> : null}
-              {this.state.selectedView === "Users" ? <UserList /> : null}
+              <Switch>
+                <Route exact path="/" component={UserList} />
+                <Route exact path="/business" component={Business} />
+              </Switch>
+              {/* {this.state.selectedView === "Home" ? <UserList /> : null}
+              {this.state.selectedView === "Businesses" ? <Business /> : null}
+              {this.state.selectedView === "Users" ? <UserList /> : null} */}
             </Typography>
           </main>
         </div>
