@@ -78,7 +78,7 @@ const CreateUser = props => {
     <>
       <Paper className={classes.root}>
         <Typography variant="h2" gutterBottom>
-          Create User
+          Create & Delete User
         </Typography>
         <form
           className={classes.form}
