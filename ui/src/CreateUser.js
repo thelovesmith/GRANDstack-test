@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import gql from "graphql-tag";
 import { withStyles } from "@material-ui/core/styles";
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import { Mutation } from "react-apollo";
 import {
   Paper,
   Typography,
@@ -17,6 +18,15 @@ import {
 const User_Mutation = gql`
   mutation UserMutation($name: String!) {
     CreateUser(name: $name) {
+      name
+      id
+    }
+  }
+`;
+
+const DELETE_USER = gql`
+  mutation DeleteUser($id: ID) {
+    DeleteUser(id: $id) {
       name
       id
     }
@@ -61,10 +71,14 @@ const CreateUser = props => {
   const [name, setName] = useState("");
   const { loading, error, data } = useQuery(GET_USER);
 
+  const [
+    Delete,
+    { loading: mutationLoading, error: mutationError }
+  ] = useMutation(DELETE_USER);
+
   const [CreateUser] = useMutation(User_Mutation, {
     update: (proxy, { data: { CreateUser } }) => {
       const data = proxy.readQuery({ query: GET_USER });
-
       data.User.push(CreateUser);
       proxy.writeQuery({
         query: GET_USER,
@@ -72,6 +86,14 @@ const CreateUser = props => {
       });
     }
   });
+
+  // const remove = (e) => {
+  //   e.preventDefault();
+  //   DeleteUser({
+  //     variables: { id: u.id }
+  //   });
+  // };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
   return (
@@ -109,17 +131,17 @@ const CreateUser = props => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.User.map(u => {
+              {data.User.map(({ id, name, avgStars }) => {
                 return (
-                  <TableRow key={u.id}>
-                    <TableCell>{u.name}</TableCell>
-                    <TableCell>{u.id}</TableCell>
+                  <TableRow key={id}>
+                    <TableCell>{name}</TableCell>
+                    <TableCell>{id}</TableCell>
                     <TableCell numeric="true">
                       {" "}
-                      {u.avgStars ? u.avgStars.toFixed(2) : "-"}{" "}
+                      {avgStars ? avgStars.toFixed(2) : "-"}{" "}
                     </TableCell>
                     <TableCell>
-                      <Button>Delete</Button>
+                      <input type="submit" />
                     </TableCell>
                   </TableRow>
                 );
@@ -127,6 +149,8 @@ const CreateUser = props => {
             </TableBody>
           </Table>
         )}
+        {mutationLoading && <p>Loading...</p>}
+        {mutationError && <p>Error :( Please try again</p>}
       </Paper>
     </>
   );
