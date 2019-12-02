@@ -74,12 +74,12 @@ const Business = props => {
               {data.Business.map(b => {
                 return (
                   <TableRow key={b.id}>
-                    <TableCell component="th" scope="row">
+                    <TableCell>
                       <strong>{b.name}</strong>
                     </TableCell>
                     <TableCell>{b.address}</TableCell>
                     <TableCell>{b.categories[0].name}</TableCell>
-                    <TableCell numeric>
+                    <TableCell numeric="true">
                       {b.avgStars ? b.avgStars.toFixed(2) : "-"}
                     </TableCell>
                   </TableRow>

@@ -25,6 +25,7 @@ import {
 
 import UserList from "./UserList";
 import Business from "./BusinessList";
+import CreateUser from "./CreateUser";
 import classNames from "classnames";
 
 const drawerWidth = 240;
@@ -152,7 +153,7 @@ class App extends Component {
               </IconButton>
               <Typography
                 component="h1"
-                variant="title"
+                variant="h1"
                 color="inherit"
                 noWrap
                 className={classes.title}
@@ -201,12 +202,17 @@ class App extends Component {
                   </ListItem>
                 </Link>
                 {/*  */}
-                <ListItem button onClick={() => this.setSelectedView("Users")}>
-                  <ListItemIcon>
-                    <PeopleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Users" />
-                </ListItem>
+                <Link to="/create">
+                  <ListItem
+                    button
+                    onClick={() => this.setSelectedView("Users")}
+                  >
+                    <ListItemIcon>
+                      <PeopleIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Create" />
+                  </ListItem>
+                </Link>
                 {/*  */}
               </div>
             </List>
@@ -218,6 +224,7 @@ class App extends Component {
               <Switch>
                 <Route exact path="/" component={UserList} />
                 <Route exact path="/business" component={Business} />
+                <Route exact path="/create" component={CreateUser} />
               </Switch>
               {/* {this.state.selectedView === "Home" ? <UserList /> : null}
               {this.state.selectedView === "Businesses" ? <Business /> : null}
