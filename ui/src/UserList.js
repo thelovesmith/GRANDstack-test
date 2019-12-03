@@ -136,7 +136,7 @@ function UserList(props) {
               <TableCell
                 key="avgStars"
                 sortDirection={orderBy === "avgStars" ? order : false}
-                numeric
+                numeric="true"
               >
                 <Tooltip title="Sort" placement="bottom-end" enterDelay={300}>
                   <TableSortLabel
@@ -151,7 +151,7 @@ function UserList(props) {
               <TableCell
                 key="numReviews"
                 sortDirection={orderBy === "numReviews" ? order : false}
-                numeric
+                numeric="true"
               >
                 <Tooltip title="Sort" placement="bottom-start" enterDelay={300}>
                   <TableSortLabel
@@ -172,10 +172,10 @@ function UserList(props) {
                   <TableCell component="th" scope="row">
                     <strong>{n.name}</strong>
                   </TableCell>
-                  <TableCell numeric>
+                  <TableCell numeric="true">
                     {n.avgStars ? n.avgStars.toFixed(2) : "-"}
                   </TableCell>
-                  <TableCell numeric>{n.numReviews}</TableCell>
+                  <TableCell numeric="true">{n.numReviews}</TableCell>
                 </TableRow>
               );
             })}

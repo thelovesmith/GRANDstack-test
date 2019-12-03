@@ -4,7 +4,7 @@ import express from "express";
 import { v1 as neo4j } from "neo4j-driver";
 import { makeAugmentedSchema } from "neo4j-graphql-js";
 import dotenv from "dotenv";
-
+import { IsAuthenticatedDirective } from "graphql-auth-directives";
 // set environment variables from ../.env
 dotenv.config();
 

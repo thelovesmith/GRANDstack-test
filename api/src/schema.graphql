@@ -1,6 +1,8 @@
 type User {
   id: ID!
   name: String
+  email: String!
+  password: String!
   friends: [User] @relation(name: "FRIENDS", direction: "BOTH")
   reviews: [Review] @relation(name: "WROTE", direction: "OUT")
   avgStars: Float
@@ -50,3 +52,4 @@ type Query {
       statement: "MATCH (u:User) WHERE u.name CONTAINS $substring RETURN u"
     )
 }
+

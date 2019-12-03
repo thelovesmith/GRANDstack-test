@@ -23,6 +23,7 @@ import {
   People as PeopleIcon
 } from "@material-ui/icons";
 
+import LandingPage from "./Landing";
 import UserList from "./UserList";
 import Business from "./BusinessList";
 import CreateUser from "./CreateUser";
@@ -190,6 +191,15 @@ class App extends Component {
                   </ListItem>
                 </Link>
                 {/*  */}
+                <Link to="/users">
+                  <ListItem button onClick={() => this.setSelectedView("Home")}>
+                    <ListItemIcon>
+                      <DashboardIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Users" />
+                  </ListItem>
+                </Link>
+                {/*  */}
                 <Link to="/business">
                   <ListItem
                     button
@@ -222,7 +232,8 @@ class App extends Component {
             {/* FIXME: Use proper routing here instead  */}
             <Typography component="div" className={classes.chartContainer}>
               <Switch>
-                <Route exact path="/" component={UserList} />
+                <Route exact path="/" component={LandingPage} />
+                <Route exact path="/users" component={UserList} />
                 <Route exact path="/business" component={Business} />
                 <Route exact path="/create" component={CreateUser} />
               </Switch>
