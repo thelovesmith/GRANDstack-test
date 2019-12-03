@@ -69,11 +69,11 @@ const styles = theme => ({
 const CreateUser = props => {
   const { classes } = props;
   const [name, setName] = useState("");
-  const { loading, error, data } = useQuery(GET_USER);
+  const { loading: queryLoading, error: queryError, data } = useQuery(GET_USER);
 
   const [
     Delete,
-    { loading: mutationLoading, error: mutationError }
+    { loading: mutationLoading, error: mutationError, data: mutationData }
   ] = useMutation(DELETE_USER);
 
   const [CreateUser] = useMutation(User_Mutation, {
@@ -87,15 +87,14 @@ const CreateUser = props => {
     }
   });
 
-  // const remove = (e) => {
-  //   e.preventDefault();
-  //   DeleteUser({
-  //     variables: { id: u.id }
-  //   });
-  // };
+  const remove = id => {
+    console.log("its hitting");
+    console.log(id, "id ");
+    Delete({ variables: { id } });
+  };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (queryLoading) return <p>Loading...</p>;
+  if (queryError) return <p>Error :(</p>;
   return (
     <>
       <Paper className={classes.root}>
@@ -121,7 +120,7 @@ const CreateUser = props => {
             Create
           </Button>
         </form>
-        {data && !loading && !error && (
+        {data && !queryLoading && !queryError && (
           <Table>
             <TableHead>
               <TableRow>
@@ -141,7 +140,10 @@ const CreateUser = props => {
                       {avgStars ? avgStars.toFixed(2) : "-"}{" "}
                     </TableCell>
                     <TableCell>
-                      <input type="submit" />
+                      <button onClick={() => remove(id)}>Delete</button>
+                      <button onClick={() => Delete({ variables: { id } })}>
+                        Delete Mutation
+                      </button>
                     </TableCell>
                   </TableRow>
                 );
