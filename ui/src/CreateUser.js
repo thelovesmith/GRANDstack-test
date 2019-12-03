@@ -71,6 +71,7 @@ const CreateUser = props => {
   const [name, setName] = useState("");
   const { loading: queryLoading, error: queryError, data } = useQuery(GET_USER);
 
+  // Delete useMutation
   const [
     Delete,
     { loading: mutationLoading, error: mutationError, data: mutationData }
@@ -87,12 +88,16 @@ const CreateUser = props => {
     }
   });
 
+  //////
+  //////
+  //Function to see if id is getting passed
   const remove = id => {
     console.log("its hitting");
     console.log(id, "id ");
     Delete({ variables: { id } });
   };
-
+  ////////
+  ////////
   if (queryLoading) return <p>Loading...</p>;
   if (queryError) return <p>Error :(</p>;
   return (
@@ -140,6 +145,7 @@ const CreateUser = props => {
                       {avgStars ? avgStars.toFixed(2) : "-"}{" "}
                     </TableCell>
                     <TableCell>
+                      {/* Buttons that call delete useMutation when clicked */}
                       <button onClick={() => remove(id)}>Delete</button>
                       <button onClick={() => Delete({ variables: { id } })}>
                         Delete Mutation
