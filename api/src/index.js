@@ -2,7 +2,7 @@ import { typeDefs } from "./graphql-schema";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import { v1 as neo4j } from "neo4j-driver";
-import { makeAugmentedSchema } from "neo4j-graphql-js";
+import { makeAugmentedSchema, neo4jgraphql } from "neo4j-graphql-js";
 import dotenv from "dotenv";
 import { IsAuthenticatedDirective } from "graphql-auth-directives";
 // set environment variables from ../.env
@@ -21,7 +21,11 @@ const app = express();
 // typedefs are coming from the graphql-schema & schema.grapql
 // AugmentSchema auto generates Mutations and Queries
 const schema = makeAugmentedSchema({
-  typeDefs
+  typeDefs,
+  resolvers,
+  schemaDirectives: {
+    isAuthenticated: IsAuthenticatedDirective
+  }
 });
 
 /*
@@ -43,12 +47,35 @@ const driver = neo4j.driver(
  * instance into the context object so it is available in the
  * generated resolvers to connect to the database.
  */
+//! assuming our middleware has added a user object
+//! to the requet if it si authenrticated
+//! inject the reqiest object into the context
+//! so it will be available in the resolver
 const server = new ApolloServer({
-  context: { driver },
   schema: schema,
+  context: ({ req }) => {
+    return {
+      driver,
+      req
+    };
+  },
   introspection: true,
   playground: true
 });
+//! then in the resolver check for the exisctence of the user object 
+const resolvers = {
+  Query: {
+    Business(object, params, ctx, resolveInfo) {
+      if (!ctx.req.user) {
+        //request is not authenticated, throw an error
+        throw new Error("request not authenticated");
+      } else {
+        // request is authenticated, fetch the data
+        return neo4jgraphql(object, params, ctx, resolveInfo);
+      }
+    }
+  }
+};
 
 // Specify port and path for GraphQL endpoint
 const port = process.env.GRAPHQL_LISTEN_PORT || 4001;

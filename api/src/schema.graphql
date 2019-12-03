@@ -1,4 +1,5 @@
-type User {
+type User
+  @isAuthenticated { #using graphql authentication directive,, User data should only be available when the GraphQL request is authenticated.
   id: ID!
   name: String
   email: String!
@@ -18,7 +19,8 @@ type User {
     )
 }
 
-type Business {
+type Business
+  @hasRole(roles: [admin]) { #only users with the role admin can wuery business data
   id: ID!
   name: String
   address: String
@@ -51,5 +53,31 @@ type Query {
     @cypher(
       statement: "MATCH (u:User) WHERE u.name CONTAINS $substring RETURN u"
     )
+
+  starsByCategory(category: String): [StarCount]
+    @cypher(
+      statement: """
+      MATCH (c:Category)<-[:IN_CATEGORY]-(:Business)<-[:REVIEWS]-(r:Review)
+      WHERE toLower(c.name) CONTAINS toLower($category)
+      WITH toString(r.stars) AS stars, COUNT(*) AS num
+      RETURN {star: stars, count: num}
+      """
+    )
 }
 
+# First we add an enum with our different available roles to the GraphQL schema below:
+# Then we use one or more of these roles in the directive for the Business typeDef above
+enum Role {
+  admin
+  reader
+  user
+}
+
+# Scopes are especially useful when we need to declare authorization rules on mutations. And in fact a role could map to a group of scopes. Using a @hasScope directive to declare authorization rules for a mutation would look something like this:
+
+# type Mutation {
+#   CreateBusiness(id: ID!, name: String): Business
+#     @hasScope(scope: ["user:write"])
+# }
+
+# In order to create a Business, the user making the request must have the user:write scope.
