@@ -24,6 +24,7 @@
     "dotenv": "^8.2.0",
     "graphql-auth-directives": "^2.1.0",
     "graphql-tag": "^2.10.1",
+    "graphql-tools": "^4.0.6",
     "jsonwebtoken": "^8.5.1",
     "neo4j-driver": "^1.7.6",
     "neo4j-graphql-js": "^2.9.3",

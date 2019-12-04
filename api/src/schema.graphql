@@ -1,3 +1,7 @@
+# directive @hasScope(scopes: [String]) on OBJECT | FIELD_DEFINITION
+directive @hasRole(roles: [Role]) on OBJECT | FIELD_DEFINITION
+directive @isAuthenticated on OBJECT | FIELD_DEFINITION
+
 type User
   @isAuthenticated { #using graphql authentication directive,, User data should only be available when the GraphQL request is authenticated.
   id: ID!
@@ -63,6 +67,15 @@ type Query {
       RETURN {star: stars, count: num}
       """
     )
+}
+type Mutation {
+  signup(username: String!, email: String!, password: String!): String
+  login(email: String!, password: String!): String
+}
+
+type StarCount {
+  star: Int
+  count: Int
 }
 
 # First we add an enum with our different available roles to the GraphQL schema below:
