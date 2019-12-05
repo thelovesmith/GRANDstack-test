@@ -71,53 +71,56 @@ const server = new ApolloServer({
 const resolvers = {
   Query: {
     Business(object, params, ctx, resolveInfo) {
-      if (!ctx.req.user) {
-        //request is not authenticated, throw an error
-        throw new Error("request not authenticated");
+      if (
+        !ctx ||
+        !ctx.headers ||
+        (!ctx.headers.authorization && !ctx.headers.Authorization)
+      ) {
+        throw new Error("No authorization token");
       } else {
         // request is authenticated, fetch the data
         return neo4jgraphql(object, params, ctx, resolveInfo);
       }
     }
   },
-  Mutation: {
-    // Handle user signup
-    async signup({ username, email, password }) {
-      const user = await User.create({
-        username,
-        email,
-        password: await bcrypt.hash(password, 10)
-      });
+  // Mutation: {
+  //   // Handle user signup
+  //   async signup({ username, email, password }) {
+  //     const user = await User.create({
+  //       username,
+  //       email,
+  //       password: await bcrypt.hash(password, 10)
+  //     });
 
-      // return json web token
-      return jsonwebtoken.sign(
-        { id: user.id, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1y" }
-      );
-    },
-    // Handles user login
-    async login({ email, password }) {
-      const user = await User.findOne({ where: { email } });
+  //     // return json web token
+  //     return jsonwebtoken.sign(
+  //       { id: user.id, email: user.email },
+  //       process.env.JWT_SECRET,
+  //       { expiresIn: "1y" }
+  //     );
+  //   },
+  //   // Handles user login
+  //   async login({ email, password }) {
+  //     const user = await User.findOne({ where: { email } });
 
-      if (!user) {
-        throw new Error("No user with that email");
-      }
+  //     if (!user) {
+  //       throw new Error("No user with that email");
+  //     }
 
-      const valid = await bcrypt.compare(password, user.password);
+  //     const valid = await bcrypt.compare(password, user.password);
 
-      if (!valid) {
-        throw new Error("Incorrect password");
-      }
+  //     if (!valid) {
+  //       throw new Error("Incorrect password");
+  //     }
 
-      // return json web token
-      return jsonwebtoken.sign(
-        { id: user.id, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
-    }
-  }
+  //     // return json web token
+  //     return jsonwebtoken.sign(
+  //       { id: user.id, email: user.email },
+  //       process.env.JWT_SECRET,
+  //       { expiresIn: "1d" }
+  //     );
+  //   }
+  // }
 };
 
 // Specify port and path for GraphQL endpoint
